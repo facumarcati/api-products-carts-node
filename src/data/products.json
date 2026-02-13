@@ -1,0 +1,24 @@
+[
+  {
+    "id": "77fba59b-1e30-4111-bfa8-cd1cb6264338",
+    "title": "Mouse Gamer RGB",
+    "description": "Mouse gamer con iluminación RGB y sensor óptico de alta precisión.",
+    "code": "MOU-RGB-001",
+    "price": 29.99,
+    "status": true,
+    "stock": 150,
+    "category": "Periféricos",
+    "thumbnails": "https://example.com/images/mouse-rgb.png"
+  },
+  {
+    "id": "c8478906-8eaf-4cbf-848c-c1cdcd42db23",
+    "title": "Teclado Mecánico",
+    "description": "Teclado mecánico con switches blue y retroiluminación LED.",
+    "code": "KEY-MEC-002",
+    "price": 79.99,
+    "status": true,
+    "stock": 80,
+    "category": "Periféricos",
+    "thumbnails": "https://example.com/images/teclado-mecanico.png"
+  }
+]

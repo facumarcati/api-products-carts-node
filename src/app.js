@@ -1,0 +1,114 @@
+import express from "express";
+import ProductManager from "./productManager.js";
+import CartManager from "./cartManager.js";
+
+const app = express();
+
+app.use(express.json());
+
+const productManager = new ProductManager("./src/data/products.json");
+const cartManager = new CartManager("./src/data/carts.json");
+
+app.get("/api/products", async (req, res) => {
+  try {
+    const products = await productManager.getProducts();
+
+    res.status(200).json({ status: "success", products });
+  } catch (error) {
+    res.status(500).json({ status: "error", message: error.message });
+  }
+});
+
+app.get("/api/products/:id", async (req, res) => {
+  try {
+    const productId = req.params.id;
+
+    const product = await productManager.getProductById(productId);
+
+    res.status(200).json({ status: "success", product });
+  } catch (error) {
+    res.status(500).json({ status: "error", message: error.message });
+  }
+});
+
+app.post("/api/products", async (req, res) => {
+  try {
+    const newProduct = req.body;
+
+    const product = await productManager.addProduct(newProduct);
+
+    res.status(201).json({ status: "success", product });
+  } catch (error) {
+    res.status(500).json({ status: "error", message: error.message });
+  }
+});
+
+app.delete("/api/products/:id", async (req, res) => {
+  try {
+    const productId = req.params.id;
+
+    await productManager.deleteProductById(productId);
+
+    res.status(204).send();
+  } catch (error) {
+    res.status(500).json({ status: "error", message: error.message });
+  }
+});
+
+app.put("/api/products/:id", async (req, res) => {
+  try {
+    const productId = req.params.id;
+    const upgrades = req.body;
+
+    const product = await productManager.updateProductById(productId, upgrades);
+
+    res.status(200).json({ status: "success", product });
+  } catch (error) {
+    res.status(500).json({ status: "error", message: error.message });
+  }
+});
+
+app.post("/api/carts", async (req, res) => {
+  try {
+    const cart = await cartManager.createCart();
+
+    res.status(201).json({ status: "success", cart });
+  } catch (error) {
+    res.status(500).json({ status: "error", message: error.message });
+  }
+});
+
+app.get("/api/carts/:cid", async (req, res) => {
+  try {
+    const cartId = req.params.cid;
+
+    const cart = await cartManager.getCartById(cartId);
+
+    res.status(200).json({ status: "success", products: cart.products });
+  } catch (error) {
+    res.status(500).json({ status: "error", message: error.message });
+  }
+});
+
+app.post("/api/carts/:cid/product/:pid", async (req, res) => {
+  try {
+    const cartId = req.params.cid;
+    const productId = req.params.pid;
+
+    await productManager.getProductById(productId);
+
+    const updatedCart = await cartManager.addProductToCart(cartId, productId);
+
+    res.status(200).json({ status: "success", cart: updatedCart });
+  } catch (error) {
+    res.status(500).json({ status: "error", message: error.message });
+  }
+});
+
+app.use((req, res) => {
+  res.json({ message: "Ruta no encontrada" });
+});
+
+app.listen(8080, () => {
+  console.log("Servidor iniciado en http://localhost:8080");
+});
