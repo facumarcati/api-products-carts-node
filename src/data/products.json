@@ -8,7 +8,7 @@
     "status": true,
     "stock": 150,
     "category": "Periféricos",
-    "thumbnails": "https://example.com/images/mouse-rgb.png"
+    "thumbnails": ""
   },
   {
     "id": "c8478906-8eaf-4cbf-848c-c1cdcd42db23",
@@ -19,6 +19,6 @@
     "status": true,
     "stock": 80,
     "category": "Periféricos",
-    "thumbnails": "https://example.com/images/teclado-mecanico.png"
+    "thumbnails": ""
   }
 ]

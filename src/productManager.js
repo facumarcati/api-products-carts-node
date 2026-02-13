@@ -14,7 +14,6 @@ class ProductManager {
     try {
       const products = await this.getProducts();
 
-      //verificamos que el codigo no este repetido
       const codeUsed = this.verifyCode(product.code, products);
 
       if (codeUsed) throw new Error("el codigo enviado ya está en uso");
