@@ -1,10 +1,22 @@
 import express from "express";
 import ProductManager from "./productManager.js";
 import CartManager from "./cartManager.js";
+import { engine } from "express-handlebars";
+import http from "http";
+import { Server } from "socket.io";
+import viewsRouter from "./routes/views.router.js";
 
 const app = express();
 
+const server = http.createServer(app);
+const io = new Server(server);
+
 app.use(express.json());
+app.use("/", viewsRouter);
+
+app.engine("handlebars", engine());
+app.set("view engine", "handlebars");
+app.set("views", "./src/views");
 
 const productManager = new ProductManager("./src/data/products.json");
 const cartManager = new CartManager("./src/data/carts.json");
@@ -109,6 +121,6 @@ app.use((req, res) => {
   res.json({ message: "Ruta no encontrada" });
 });
 
-app.listen(8080, () => {
+server.listen(8080, () => {
   console.log("Servidor iniciado en http://localhost:8080");
 });
