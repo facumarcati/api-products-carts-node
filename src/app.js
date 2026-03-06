@@ -2,8 +2,8 @@ import express from "express";
 import ProductManager from "./productManager.js";
 import CartManager from "./cartManager.js";
 import { engine } from "express-handlebars";
-import http from "http";
 import { Server } from "socket.io";
+import http from "http";
 import viewsRouter from "./routes/views.router.js";
 
 const app = express();
@@ -12,6 +12,7 @@ const server = http.createServer(app);
 const io = new Server(server);
 
 app.use(express.json());
+app.use(express.static("./src/public"));
 app.use("/", viewsRouter);
 
 app.engine("handlebars", engine());
@@ -115,6 +116,22 @@ app.post("/api/carts/:cid/product/:pid", async (req, res) => {
   } catch (error) {
     res.status(500).json({ status: "error", message: error.message });
   }
+});
+
+io.on("connection", async (socket) => {
+  console.log("Nuevo cliente conectado");
+
+  let products = await productManager.getProducts();
+
+  socket.emit("products", products);
+
+  socket.on("addProduct", async (product) => {
+    await productManager.addProduct(product);
+
+    products = await productManager.getProducts();
+
+    io.emit("products", products);
+  });
 });
 
 app.use((req, res) => {
