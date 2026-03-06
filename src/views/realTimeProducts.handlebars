@@ -1,21 +1,76 @@
-<h1>Productos en tiempo real</h1>
+<div class="page-header">
+  <span class="eyebrow"></span>
+  <h1>Gestión de Productos</h1>
+</div>
 
-<h2>Agregar producto</h2>
+<div class="page-nav">
+  <a href="/" class="page-nav-link">
+    ← Ver lista de productos
+  </a>
+</div>
 
-<form id="productForm">
-  <input type="text" id="title" placeholder="Titulo" required />
-  <input type="text" id="description" placeholder="Descripcion" required />
-  <input type="text" id="code" placeholder="Codigo" required />
-  <input type="number" id="price" placeholder="Precio" required />
-  <input type="number" id="stock" placeholder="Stock" required />
-  <input type="text" id="category" placeholder="Categoria" required />
+<div class="page-layout">
 
-  <button type="submit">Agregar</button>
-</form>
+  <aside class="form-panel">
+    <p class="section-label">Agregar Producto</p>
 
-<h2>Lista de productos</h2>
+    <form id="productForm">
+      <fieldset>
 
-<ul id="productList"></ul>
+        <div class="field-group">
+          <label for="title">Título</label>
+          <input type="text" id="title" name="title" required />
+        </div>
+
+        <div class="field-group">
+          <label for="description">Descripción</label>
+          <input type="text" id="description" name="description" required />
+        </div>
+
+        <div class="field-row">
+          <div class="field-group">
+            <label for="code">Código</label>
+            <input type="text" id="code" name="code" required />
+          </div>
+          <div class="field-group">
+            <label for="category">Categoría</label>
+            <input type="text" id="category" name="category" required />
+          </div>
+        </div>
+
+        <div class="field-row">
+          <div class="field-group">
+            <label for="price">Precio</label>
+            <input type="number" id="price" name="price" required />
+          </div>
+          <div class="field-group">
+            <label for="stock">Stock</label>
+            <input type="number" id="stock" name="stock" required />
+          </div>
+        </div>
+
+      </fieldset>
+
+      <button class="btn-yellow" type="submit">
+        + Agregar Producto
+      </button>
+    </form>
+  </aside>
+
+  <section class="products-panel">
+    <p class="section-label">
+      Lista de Productos
+      <span class="product-count" id="productCount">0</span>
+    </p>
+
+    <div class="products-grid" id="productList">
+      <div class="empty-state">
+        <p>No hay productos registrados.</p>
+      </div>
+    </div>
+  </section>
+
+</div>
 
 <script src="/socket.io/socket.io.js"></script>
-<script src="/js/realTimeProduct.js"></script>
+<script src="/js/realTimeProducts.js"></script>

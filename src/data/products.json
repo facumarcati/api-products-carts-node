@@ -20,16 +20,5 @@
     "stock": 80,
     "category": "Periféricos",
     "thumbnails": ""
-  },
-  {
-    "id": "ab158ac5-b39b-4432-9bd7-b4ae22308828",
-    "title": "Monitor Gigabyte 27\"",
-    "description": "Monitor Gigabyte 27\" 180hz 4k",
-    "code": "MON-GIG-001",
-    "price": 120,
-    "stock": 25,
-    "category": "Monitores",
-    "status": true,
-    "thumbnails": ""
   }
 ]

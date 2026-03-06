@@ -11,13 +11,20 @@ const app = express();
 const server = http.createServer(app);
 const io = new Server(server);
 
+app.engine(
+  "handlebars",
+  engine({
+    helpers: {
+      gt: (a, b) => a > b,
+    },
+  }),
+);
+app.set("view engine", "handlebars");
+app.set("views", "./src/views");
+
 app.use(express.json());
 app.use(express.static("./src/public"));
 app.use("/", viewsRouter);
-
-app.engine("handlebars", engine());
-app.set("view engine", "handlebars");
-app.set("views", "./src/views");
 
 const productManager = new ProductManager("./src/data/products.json");
 const cartManager = new CartManager("./src/data/carts.json");
@@ -131,6 +138,18 @@ io.on("connection", async (socket) => {
     products = await productManager.getProducts();
 
     io.emit("products", products);
+  });
+
+  socket.on("deleteProduct", async (id) => {
+    try {
+      await productManager.deleteProductById(id);
+
+      const products = await productManager.getProducts();
+
+      io.emit("products", products);
+    } catch (error) {
+      console.log(error);
+    }
   });
 });
 

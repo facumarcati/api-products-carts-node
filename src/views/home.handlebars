@@ -1,10 +1,51 @@
-<h1>Lista de productos</h1>
+<div class="home-header">
+  <span class="eyebrow"></span>
+  <h1>Productos</h1>
+</div>
 
-<ul>
-  {{#each products}}
-    <li>
-      {{this.title}}
-      - ${{this.price}}
+<div class="page-nav">
+  <a href="/realtimeproducts" class="page-nav-link">
+    Gestión en tiempo real →
+  </a>
+</div>
+
+<section class="product-list-section">
+
+  <div class="product-list-header">
+    <span class="col-num">#</span>
+    <span class="col-title">Producto</span>
+    <span class="col-category">Categoría</span>
+    <span class="col-stock">Stock</span>
+    <span class="col-price">Precio</span>
+  </div>
+
+  <ul class="product-list" id="productList">
+    {{#each products}}
+    <li class="product-row"> 
+      <span class="col-num"></span>
+
+      <div class="col-title">
+        <span class="product-row-title">{{this.title}}</span>
+        <span class="product-row-desc">{{this.description}}</span>
+      </div>
+
+      <span class="col-category">
+        <span class="category-tag">{{this.category}}</span>
+      </span>
+
+      <span class="col-stock">
+        <span class="stock-value {{#if (gt this.stock 10)}}stock-ok{{else}}stock-low{{/if}}">
+          {{this.stock}}
+        </span>
+      </span>
+
+      <span class="col-price">${{this.price}}</span>
     </li>
-  {{/each}}
-</ul>
+    {{else}}
+    <li class="list-empty-state">
+      <p>No hay productos disponibles.</p>
+    </li>
+    {{/each}}
+  </ul>
+
+</section>
