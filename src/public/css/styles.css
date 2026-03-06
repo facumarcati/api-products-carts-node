@@ -659,7 +659,7 @@ body {
   }
 
   .col-stock {
-    display: none; /* stock ya no se muestra, queda limpio */
+    display: none;
   }
 }
 
