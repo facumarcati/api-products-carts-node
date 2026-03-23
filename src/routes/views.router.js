@@ -14,13 +14,24 @@ router.get("/", (req, res) => {
 
 router.get("/products", async (req, res) => {
   try {
-    let { limit = 5, page = 1, sort, query } = req.query;
+    let { limit = 5, page = 1, sort, query, category, status } = req.query;
     limit = parseInt(limit);
     page = parseInt(page);
 
+    let filter = {};
+
+    if (query) filter.title = new RegExp(query, "i");
+    if (category) filter.category = category;
+    if (status !== undefined && status !== "")
+      filter.status = status === "true";
+
     let options = { page, limit, lean: true };
 
-    const result = await ProductModel.paginate({}, options);
+    if (sort) options.sort = { price: sort === "asc" ? 1 : -1 };
+
+    const result = await ProductModel.paginate(filter, options);
+
+    const categories = await ProductModel.distinct("category");
 
     res.render("home", {
       products: result.docs,
@@ -29,6 +40,11 @@ router.get("/products", async (req, res) => {
       hasNextPage: result.hasNextPage,
       prevLink: result.hasPrevPage ? `/products?page=${result.prevPage}` : null,
       nextLink: result.hasNextPage ? `/products?page=${result.nextPage}` : null,
+      activeQuery: query || "",
+      activeCategory: category || "",
+      activeStatus: status || "",
+      sort: sort || "",
+      categories,
     });
   } catch (error) {
     console.error("Error en /products:", error.message);

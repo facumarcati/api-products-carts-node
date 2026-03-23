@@ -5,22 +5,17 @@ const router = express.Router();
 
 router.get("/", async (req, res) => {
   try {
-    let { limit = 5, page = 1, sort, query } = req.query;
+    let { limit = 5, page = 1, sort, query, category, status } = req.query;
 
     limit = parseInt(limit);
     page = parseInt(page);
 
     let filter = {};
 
-    if (query) {
-      if (query.includes("category")) {
-        filter.category = query.split(":")[1];
-      }
-
-      if (query.includes("status")) {
-        filter.status = query.split(":")[1] === "true";
-      }
-    }
+    if (query) filter.title = new RegExp(query, "i");
+    if (category) filter.category = category;
+    if (status !== undefined && status !== "")
+      filter.status = status === "true";
 
     let options = {
       page,

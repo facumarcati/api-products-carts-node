@@ -44,9 +44,14 @@ socket.on("products", (products) => {
         </div>
       </div>
 
-      <button class="btn-delete" onclick="deleteProduct('${product._id}')">
-        Eliminar
-      </button>
+      <div class="card-actions">
+        <button class="btn-toggle ${product.status ? "btn-toggle-active" : "btn-toggle-inactive"}" onclick="toggleProduct('${product._id}')">
+          ${product.status ? "Desactivar" : "Activar"}
+        </button>
+        <button class="btn-delete" onclick="deleteProduct('${product._id}')">
+          Eliminar
+        </button>
+      </div>
     `;
 
     productList.appendChild(card);
@@ -78,4 +83,8 @@ function deleteProduct(id) {
   socket.emit("deleteProduct", id);
 
   showToast("Producto eliminado", "error");
+}
+
+function toggleProduct(id) {
+  socket.emit("toggleProduct", id);
 }

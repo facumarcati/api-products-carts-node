@@ -12,6 +12,36 @@
   </a>
 </div>
 
+<div class="filters">
+  <form class="filters-form" id="filtersForm" method="GET" action="/products">
+    <input
+      type="text"
+      name="query"
+      id="filterQuery"
+      placeholder="Buscar por título..."
+      value="{{activeQuery}}"
+      class="filter-input"
+      autocomplete="off"
+    />
+    <select name="category" id="filterCategory" class="filter-select">
+      <option value="">Todas las categorías</option>
+      {{#each categories}}
+        <option value="{{this}}" {{#if (eq this ../activeCategory)}}selected{{/if}}>{{this}}</option>
+      {{/each}}
+    </select>
+    <select name="status" id="filterStatus" class="filter-select">
+      <option value="">Disponibilidad</option>
+      <option value="true" {{#if (eq activeStatus "true")}}selected{{/if}}>Activo</option>
+      <option value="false" {{#if (eq activeStatus "false")}}selected{{/if}}>Inactivo</option>
+    </select>
+    <select name="sort" id="filterSort" class="filter-select">
+      <option value="">Sin orden</option>
+      <option value="asc" {{#if (eq sort "asc")}}selected{{/if}}>Precio ↑</option>
+      <option value="desc" {{#if (eq sort "desc")}}selected{{/if}}>Precio ↓</option>
+    </select>
+  </form>
+</div>
+
 <section class="product-list-section">
   <div class="product-list-header">
     <span class="col-num">#</span>
@@ -78,3 +108,4 @@
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script src="/js/productDetail.js"></script>
 <script src="/js/toast.js"></script>
+<script src="/js/filters.js"></script>

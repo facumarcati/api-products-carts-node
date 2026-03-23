@@ -23,6 +23,7 @@ app.engine(
   engine({
     helpers: {
       gt: (a, b) => a > b,
+      eq: (a, b) => a === b,
       formatPrice: (price) =>
         price != null ? price.toLocaleString("es-AR") : "-",
     },
@@ -53,6 +54,13 @@ io.on("connection", async (socket) => {
 
   socket.on("deleteProduct", async (id) => {
     await ProductModel.findByIdAndDelete(id);
+    const updated = await ProductModel.find().lean();
+    io.emit("products", updated);
+  });
+
+  socket.on("toggleProduct", async (id) => {
+    const product = await ProductModel.findById(id);
+    await ProductModel.findByIdAndUpdate(id, { status: !product.status });
     const updated = await ProductModel.find().lean();
     io.emit("products", updated);
   });
