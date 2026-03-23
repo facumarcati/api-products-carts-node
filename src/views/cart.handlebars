@@ -1,0 +1,56 @@
+<div class="home-header">
+  <span class="eyebrow"></span>
+  <h1>Carrito</h1>
+</div>
+
+<div class="page-nav"></div>
+
+<section class="product-list-section cart-section">
+  <div class="product-list-header">
+    <span class="col-num">#</span>
+    <span class="col-title">Producto</span>
+    <span class="col-category">Categoría</span>
+    <span class="col-stock">Cantidad</span>
+    <span class="col-price">Precio</span>
+    <span></span>
+  </div>
+
+  <ul class="product-list">
+    {{#each products}}
+      <li class="product-row" data-product="{{this.product._id}}" data-price="{{this.product.price}}">
+        <span class="col-num"></span>
+        <div class="col-title">
+          <span class="product-row-title">{{this.product.title}}</span>
+        </div>
+        <span class="col-category">
+          <span class="category-tag">{{this.product.category}}</span>
+        </span>
+        <span class="col-stock">
+          <div class="qty-control">
+            <button class="qty-btn" onclick="changeQty('{{../cartId}}', '{{this.product._id}}', -1, {{this.product.stock}})">−</button>
+            <span class="qty-value">{{this.quantity}}</span>
+            <button class="qty-btn" onclick="changeQty('{{../cartId}}', '{{this.product._id}}', 1, {{this.product.stock}})">+</button>
+          </div>
+        </span>
+        <span class="col-price">${{formatPrice this.product.price}}</span>
+        <button class="btn-delete-row" onclick="deleteProduct('{{../cartId}}', '{{this.product._id}}')">✕</button>
+      </li>
+    {{else}}
+      <li class="list-empty-state">
+        <p>El carrito está vacío.</p>
+      </li>
+    {{/each}}
+  </ul>
+
+  <div class="cart-total">
+    <span class="cart-total-label">Total</span>
+    <span class="cart-total-price" id="cartTotal"></span>
+  </div>
+
+  <div class="cart-actions">
+    <a href="/products" class="back-link">← Seguir comprando</a>
+    <button class="btn-clear-cart" onclick="clearCart('{{cartId}}')">Vaciar carrito</button>
+  </div>
+</section>
+
+<script src="/js/cart.js"></script>

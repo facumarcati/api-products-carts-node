@@ -1,36 +1,43 @@
 <div class="home-header">
   <span class="eyebrow"></span>
   <h1>Productos</h1>
+  <button class="btn-secondary" onclick="goToCart()" style="margin-top: 20px; width: auto;">
+    Ver carrito
+  </button>
 </div>
 
 <div class="page-nav">
   <a href="/realtimeproducts" class="page-nav-link">
-    Gestión en tiempo real →
+    Gestionar productos →
   </a>
 </div>
 
 <section class="product-list-section">
-
   <div class="product-list-header">
     <span class="col-num">#</span>
     <span class="col-title">Producto</span>
     <span class="col-category">Categoría</span>
     <span class="col-stock">Stock</span>
     <span class="col-price">Precio</span>
+    <span></span>
   </div>
-
   <ul class="product-list" id="productList">
     {{#each products}}
     <li class="product-row"> 
       <span class="col-num"></span>
-
       <div class="col-title">
-        <span class="product-row-title">{{this.title}}</span>
-        <span class="product-row-desc">{{this.description}}</span>
+        <a href="/products/{{this._id}}" class="product-row-title">
+          {{this.title}}
+        </a>
+        <span class="product-row-desc">
+          {{this.description}}
+        </span>
       </div>
 
       <span class="col-category">
-        <span class="category-tag">{{this.category}}</span>
+        <span class="category-tag">
+          {{this.category}}
+        </span>
       </span>
 
       <span class="col-stock">
@@ -39,7 +46,10 @@
         </span>
       </span>
 
-      <span class="col-price">${{this.price}}</span>
+      <span class="col-price">
+        ${{formatPrice this.price}}
+      </span>
+      <button class="btn-add-row" onclick="addToCart('{{this._id}}')">+</button>
     </li>
     {{else}}
     <li class="list-empty-state">
@@ -47,5 +57,24 @@
     </li>
     {{/each}}
   </ul>
-
 </section>
+
+<div class="pagination">
+  {{#if hasPrevPage}}
+    <a href="{{prevLink}}" class="page-btn">
+      ← Anterior
+    </a>
+  {{/if}}
+  <span class="page-number">
+    Página {{page}}
+  </span>
+  {{#if hasNextPage}}
+    <a href="{{nextLink}}" class="page-btn">
+      Siguiente →
+    </a>
+  {{/if}}
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script src="/js/productDetail.js"></script>
+<script src="/js/toast.js"></script>

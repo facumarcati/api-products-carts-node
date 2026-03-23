@@ -4,29 +4,6 @@ const productList = document.getElementById("productList");
 const productCount = document.getElementById("productCount");
 const form = document.getElementById("productForm");
 
-const toastContainer = document.createElement("div");
-toastContainer.classList.add("toast-container");
-document.body.appendChild(toastContainer);
-
-function showToast(message, type = "success", duration = 3000) {
-  const toast = document.createElement("div");
-
-  toast.classList.add("toast", type);
-  toast.innerHTML = `<span class="toast-dot"></span>${message}`;
-  toastContainer.appendChild(toast);
-
-  requestAnimationFrame(() => {
-    requestAnimationFrame(() => toast.classList.add("show"));
-  });
-
-  setTimeout(() => {
-    toast.classList.replace("show", "hide");
-    toast.addEventListener("transitionend", () => toast.remove(), {
-      once: true,
-    });
-  }, duration);
-}
-
 socket.on("products", (products) => {
   if (productCount) productCount.textContent = products.length;
 
@@ -52,7 +29,7 @@ socket.on("products", (products) => {
       <div class="product-card-content">
         <div class="product-header">
           <h3>${product.title}</h3>
-          <span class="product-price">$${product.price}</span>
+          <span class="product-price">$${product.price.toLocaleString("es-AR")}</span>
         </div>
 
         <div class="product-body">
@@ -67,7 +44,7 @@ socket.on("products", (products) => {
         </div>
       </div>
 
-      <button class="btn-delete" onclick="deleteProduct('${product.id}')">
+      <button class="btn-delete" onclick="deleteProduct('${product._id}')">
         Eliminar
       </button>
     `;

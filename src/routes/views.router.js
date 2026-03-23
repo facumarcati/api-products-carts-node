@@ -1,22 +1,70 @@
 import { Router } from "express";
-import ProductManager from "../productManager.js";
+import ProductModel from "../models/product.model.js";
+import CartModel from "../models/cart.model.js";
 
 const router = Router();
 
-const productManager = new ProductManager("./src/data/products.json");
+router.get("/realtimeproducts", (req, res) => {
+  res.render("realtimeProducts");
+});
 
-router.get("/", async (req, res) => {
+router.get("/", (req, res) => {
+  res.redirect("/products");
+});
+
+router.get("/products", async (req, res) => {
   try {
-    const products = await productManager.getProducts();
+    let { limit = 5, page = 1, sort, query } = req.query;
+    limit = parseInt(limit);
+    page = parseInt(page);
 
-    res.render("home", { products });
+    let options = { page, limit, lean: true };
+
+    const result = await ProductModel.paginate({}, options);
+
+    res.render("home", {
+      products: result.docs,
+      page: result.page,
+      hasPrevPage: result.hasPrevPage,
+      hasNextPage: result.hasNextPage,
+      prevLink: result.hasPrevPage ? `/products?page=${result.prevPage}` : null,
+      nextLink: result.hasNextPage ? `/products?page=${result.nextPage}` : null,
+    });
   } catch (error) {
-    res.status(500).send("Error al cargar los productos");
+    console.error("Error en /products:", error.message);
+    res.status(500).send(error.message);
   }
 });
 
-router.get("/realtimeproducts", (req, res) => {
-  res.render("realTimeProducts");
+router.get("/products/:pid", async (req, res) => {
+  try {
+    const product = await ProductModel.findById(req.params.pid).lean();
+
+    if (!product) {
+      return res.status(404).send("Producto no encontrado");
+    }
+
+    res.render("productDetail", {
+      product,
+      cartId: "ID_DEL_CARRITO",
+    });
+  } catch (error) {
+    console.error("Error en /products/:pid:", error.message);
+    res.status(500).send(error.message);
+  }
+});
+
+router.get("/carts/:cid", async (req, res) => {
+  const cart = await CartModel.findById(req.params.cid)
+    .populate("products.product")
+    .lean();
+
+  const products = cart.products.filter((p) => p.product != null);
+
+  res.render("cart", {
+    products,
+    cartId: req.params.cid,
+  });
 });
 
 export default router;

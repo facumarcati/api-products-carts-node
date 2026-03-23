@@ -1,0 +1,25 @@
+<div class="detail-container">
+  <h1 class="detail-title">{{product.title}}</h1>
+
+  <div class="detail-card">
+    <p class="detail-description">{{product.description}}</p>
+
+    <div class="detail-info">
+      <span>Categoría: <strong>{{product.category}}</strong></span>
+      <span>Precio: <strong>${{formatPrice product.price}}</strong></span>
+      <span>Stock: <strong>{{product.stock}}</strong></span>
+    </div>
+
+    <button class="btn-primary" onclick="addToCart('{{product._id}}')">
+      Agregar al carrito
+    </button>
+
+    <button class="btn-secondary" onclick="goToCart()">
+      Ver carrito
+    </button>
+
+    <a href="/products" class="back-link">← Volver a productos</a>
+  </div>
+</div>
+
+<script src="/js/productDetail.js"></script>
