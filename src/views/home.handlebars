@@ -39,6 +39,8 @@
       <option value="asc" {{#if (eq sort "asc")}}selected{{/if}}>Precio ↑</option>
       <option value="desc" {{#if (eq sort "desc")}}selected{{/if}}>Precio ↓</option>
     </select>
+
+    <button type="submit" class="btn-filter">Filtrar</button>
   </form>
 </div>
 
@@ -79,7 +81,10 @@
       <span class="col-price">
         ${{formatPrice this.price}}
       </span>
-      <button class="btn-add-row" onclick="addToCart('{{this._id}}')">+</button>
+      <form method="POST" action="/carts/{{../cartId}}/products/{{this._id}}">
+        <input type="hidden" name="redirectTo" value="/products" />
+        <button type="submit" class="btn-add-row">+</button>
+      </form>
     </li>
     {{else}}
     <li class="list-empty-state">
@@ -105,7 +110,8 @@
   {{/if}}
 </div>
 
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script src="/js/productDetail.js"></script>
 <script src="/js/toast.js"></script>
-<script src="/js/filters.js"></script>
+<script>
+  const CART_ID = "{{cartId}}";
+</script>

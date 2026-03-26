@@ -4,6 +4,16 @@ import CartModel from "../models/cart.model.js";
 
 const router = Router();
 
+router.use(async (req, res, next) => {
+  if (!req.session.cartId) {
+    const newCart = await CartModel.create({ products: [] });
+    req.session.cartId = newCart._id.toString();
+  }
+
+  res.locals.cartId = req.session.cartId;
+  next();
+});
+
 router.get("/realtimeproducts", (req, res) => {
   res.render("realtimeProducts");
 });
@@ -19,27 +29,34 @@ router.get("/products", async (req, res) => {
     page = parseInt(page);
 
     let filter = {};
-
     if (query) filter.title = new RegExp(query, "i");
     if (category) filter.category = category;
     if (status !== undefined && status !== "")
       filter.status = status === "true";
 
     let options = { page, limit, lean: true };
-
     if (sort) options.sort = { price: sort === "asc" ? 1 : -1 };
 
     const result = await ProductModel.paginate(filter, options);
-
     const categories = await ProductModel.distinct("category");
+
+    const buildLink = (targetPage) => {
+      const params = new URLSearchParams();
+      if (query) params.set("query", query);
+      if (category) params.set("category", category);
+      if (status) params.set("status", status);
+      if (sort) params.set("sort", sort);
+      params.set("page", targetPage);
+      return `/products?${params.toString()}`;
+    };
 
     res.render("home", {
       products: result.docs,
       page: result.page,
       hasPrevPage: result.hasPrevPage,
       hasNextPage: result.hasNextPage,
-      prevLink: result.hasPrevPage ? `/products?page=${result.prevPage}` : null,
-      nextLink: result.hasNextPage ? `/products?page=${result.nextPage}` : null,
+      prevLink: result.hasPrevPage ? buildLink(result.prevPage) : null,
+      nextLink: result.hasNextPage ? buildLink(result.nextPage) : null,
       activeQuery: query || "",
       activeCategory: category || "",
       activeStatus: status || "",
@@ -47,7 +64,6 @@ router.get("/products", async (req, res) => {
       categories,
     });
   } catch (error) {
-    console.error("Error en /products:", error.message);
     res.status(500).send(error.message);
   }
 });
@@ -55,17 +71,10 @@ router.get("/products", async (req, res) => {
 router.get("/products/:pid", async (req, res) => {
   try {
     const product = await ProductModel.findById(req.params.pid).lean();
+    if (!product) return res.status(404).send("Producto no encontrado");
 
-    if (!product) {
-      return res.status(404).send("Producto no encontrado");
-    }
-
-    res.render("productDetail", {
-      product,
-      cartId: "ID_DEL_CARRITO",
-    });
+    res.render("productDetail", { product });
   } catch (error) {
-    console.error("Error en /products/:pid:", error.message);
     res.status(500).send(error.message);
   }
 });
@@ -81,6 +90,24 @@ router.get("/carts/:cid", async (req, res) => {
     products,
     cartId: req.params.cid,
   });
+});
+
+router.post("/carts/:cid/products/:pid", async (req, res) => {
+  const { cid, pid } = req.params;
+  const redirectTo = req.body.redirectTo || "/products";
+
+  const cart = await CartModel.findById(cid);
+  const productInCart = cart.products.find((p) => p.product.toString() === pid);
+
+  if (productInCart) {
+    productInCart.quantity++;
+  } else {
+    cart.products.push({ product: pid, quantity: 1 });
+  }
+
+  await cart.save();
+
+  res.redirect(redirectTo);
 });
 
 export default router;

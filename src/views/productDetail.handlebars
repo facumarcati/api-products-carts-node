@@ -10,16 +10,21 @@
       <span>Stock: <strong>{{product.stock}}</strong></span>
     </div>
 
-    <button class="btn-primary" onclick="addToCart('{{product._id}}')">
-      Agregar al carrito
-    </button>
+    <form method="POST" action="/carts/{{cartId}}/products/{{product._id}}">
+      <input
+        type="hidden"
+        name="redirectTo"
+        value="/products/{{product._id}}"
+      />
+      <button type="submit" class="btn-primary">Agregar al carrito</button>
+    </form>
 
-    <button class="btn-secondary" onclick="goToCart()">
-      Ver carrito
-    </button>
+    <a href="/carts/{{cartId}}" class="btn-secondary">Ver carrito</a>
 
     <a href="/products" class="back-link">← Volver a productos</a>
   </div>
 </div>
 
-<script src="/js/productDetail.js"></script>
+<script>
+  const CART_ID = "{{cartId}}";
+</script>

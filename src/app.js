@@ -2,6 +2,7 @@ import express from "express";
 import { engine } from "express-handlebars";
 import { Server } from "socket.io";
 import http from "http";
+import session from "express-session";
 import connectMongoDB from "./config/db.js";
 import ProductModel from "./models/product.model.js";
 import viewsRouter from "./routes/views.router.js";
@@ -34,8 +35,16 @@ app.set("view engine", "handlebars");
 app.set("views", "./src/views");
 
 app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 app.use(express.static("./src/public"));
 
+app.use(
+  session({
+    secret: process.env.SESSION_SECRET || "secreto123",
+    resave: false,
+    saveUninitialized: true,
+  }),
+);
 app.use("/", viewsRouter);
 app.use("/api/products", productsRouter);
 app.use("/api/carts", cartsRouter);
