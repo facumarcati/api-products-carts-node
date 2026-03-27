@@ -44,7 +44,7 @@
   </form>
 </div>
 
-<section class="product-list-section">
+<section class="product-list-section" style="counter-reset: product-counter {{offset}};">
   <div class="product-list-header">
     <span class="col-num">#</span>
     <span class="col-title">Producto</span>
@@ -56,13 +56,14 @@
   <ul class="product-list" id="productList">
     {{#each products}}
     <li class="product-row"> 
-      <span class="col-num"></span>
+      <span class="col-num">{{this.rowNumber}}</span>
       <div class="col-title">
         <a href="/products/{{this._id}}" class="product-row-title">
           {{this.title}}
         </a>
-        <span class="product-row-desc">
-          {{this.description}}
+        <span class="product-row-desc">{{this.description}}</span>
+        <span class="product-status {{#if this.status}}active{{else}}inactive{{/if}}">
+          {{#if this.status}}Activo{{else}}Inactivo{{/if}}
         </span>
       </div>
 

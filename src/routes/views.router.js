@@ -51,7 +51,10 @@ router.get("/products", async (req, res) => {
     };
 
     res.render("home", {
-      products: result.docs,
+      products: result.docs.map((p, i) => ({
+        ...p,
+        rowNumber: (page - 1) * limit + i + 1,
+      })),
       page: result.page,
       hasPrevPage: result.hasPrevPage,
       hasNextPage: result.hasNextPage,
