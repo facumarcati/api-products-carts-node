@@ -5,10 +5,15 @@ import http from "http";
 import session from "express-session";
 import connectMongoDB from "./config/db.js";
 import ProductModel from "./models/product.model.js";
+import dotenv from "dotenv";
+import passport from "passport";
+import initializePassport from "./config/passport.config.js";
+
 import viewsRouter from "./routes/views.router.js";
+import sessionsRouter from "./routes/sessions.router.js";
+
 import productsRouter from "./routes/products.route.js";
 import cartsRouter from "./routes/carts.route.js";
-import dotenv from "dotenv";
 
 dotenv.config();
 
@@ -38,6 +43,9 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static("./src/public"));
 
+initializePassport();
+app.use(passport.initialize());
+
 app.use(
   session({
     secret: process.env.SESSION_SECRET || "secreto123",
@@ -48,6 +56,7 @@ app.use(
 app.use("/", viewsRouter);
 app.use("/api/products", productsRouter);
 app.use("/api/carts", cartsRouter);
+app.use("/api/sessions", sessionsRouter);
 
 io.on("connection", async (socket) => {
   console.log("Nuevo cliente conectado");

@@ -1,10 +1,14 @@
 async function addToCart(productId) {
-  await fetch(`/api/carts/${CART_ID}/products/${productId}`, {
+  const res = await fetch(`/api/carts/${CART_ID}/products/${productId}`, {
     method: "POST",
+    headers: { Authorization: "Bearer " + token },
   });
-  showToast("Producto agregado al carrito", "success");
+  if (res.ok) {
+    showToast("Producto agregado al carrito", "success");
+  } else {
+    showToast("Error al agregar", "error");
+  }
 }
-
 function goToCart() {
   window.location.href = `/carts/${CART_ID}`;
 }

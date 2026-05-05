@@ -1,0 +1,47 @@
+<div class="page-header">
+  <span class="eyebrow"></span>
+  <h1>Iniciar sesión</h1>
+</div>
+
+<div class="page-nav">
+  <a href="/" class="page-nav-link">
+    ← Volver al inicio
+  </a>
+</div>
+
+<div class="auth-layout">
+  <aside class="form-panel" style="margin: 0 auto;">
+    <p class="section-label">Acceso</p>
+    <form id="loginForm">
+      <fieldset>
+        <div class="field-group">
+          <label for="email">Email</label>
+          <input type="email" id="email" name="email" required />
+        </div>
+        <div class="field-group">
+          <label for="password">Contraseña</label>
+          <input type="password" id="password" name="password" required />
+        </div>
+      </fieldset>
+      <button class="btn-yellow" type="submit">
+        Ingresar
+      </button>
+    </form>
+    <div class="page-nav" style="margin-top: 15px;">
+      <a href="/register" class="page-nav-link">
+        Crear cuenta →
+      </a>
+    </div>
+  </aside>
+</div>
+
+<script>
+  const form = document.getElementById("loginForm");
+  form.addEventListener("submit", async (e) => { e.preventDefault(); const data
+  = { email: form.email.value, password: form.password.value }; const res =
+  await fetch("/api/sessions/login", { method: "POST", headers: {
+  "Content-Type": "application/json" }, body: JSON.stringify(data) }); const
+  result = await res.json(); if (result.token) { localStorage.setItem("token",
+  result.token); window.location.href = "/"; } else { alert("Error en login"); }
+  });
+</script>

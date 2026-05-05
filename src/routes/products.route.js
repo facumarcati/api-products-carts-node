@@ -1,5 +1,7 @@
 import express from "express";
+import passport from "passport";
 import ProductModel from "../models/product.model.js";
+import { isAdmin } from "../middlewares/auth.middleware.js";
 
 const router = express.Router();
 
@@ -51,5 +53,63 @@ router.get("/", async (req, res) => {
     res.status(500).json({ status: "error", error: error.message });
   }
 });
+
+router.post(
+  "/",
+  passport.authenticate("jwt", { session: false }),
+  isAdmin,
+  async (req, res) => {
+    try {
+      const newProduct = await ProductModel.create(req.body);
+
+      res.status(201).json({
+        status: "success",
+        product: newProduct,
+      });
+    } catch (error) {
+      res.status(500).json({ status: "error", error: error.message });
+    }
+  },
+);
+
+router.put(
+  "/:pid",
+  passport.authenticate("jwt", { session: false }),
+  isAdmin,
+  async (req, res) => {
+    try {
+      const updatedProduct = await ProductModel.findByIdAndUpdate(
+        req.params.pid,
+        req.body,
+        { new: true },
+      );
+
+      res.json({
+        status: "success",
+        product: updatedProduct,
+      });
+    } catch (error) {
+      res.status(500).json({ status: "error", error: error.message });
+    }
+  },
+);
+
+router.delete(
+  "/:pid",
+  passport.authenticate("jwt", { session: false }),
+  isAdmin,
+  async (req, res) => {
+    try {
+      await ProductModel.findByIdAndDelete(req.params.pid);
+
+      res.json({
+        status: "success",
+        message: "Producto eliminado",
+      });
+    } catch (error) {
+      res.status(500).json({ status: "error", error: error.message });
+    }
+  },
+);
 
 export default router;

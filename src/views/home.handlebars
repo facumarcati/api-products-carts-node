@@ -1,15 +1,15 @@
 <div class="home-header">
   <span class="eyebrow"></span>
   <h1>Productos</h1>
-  <button class="btn-secondary" onclick="goToCart()" style="margin-top: 20px; width: auto;">
-    Ver carrito
-  </button>
+  <div class="home-header-actions">
+    <button class="btn-secondary" onclick="goToCart()">Ver carrito</button>
+    <div id="authButtons"></div>
+  </div>
+  <div id="adminLink"></div>
 </div>
 
 <div class="page-nav">
-  <a href="/realtimeproducts" class="page-nav-link">
-    Gestionar productos →
-  </a>
+  <div id="adminLink"></div>
 </div>
 
 <div class="filters">
@@ -41,6 +41,7 @@
     </select>
 
     <button type="submit" class="btn-filter">Filtrar</button>
+    <a href="/products" class="btn-filter-clear">✕ Limpiar</a>
   </form>
 </div>
 
@@ -82,10 +83,11 @@
       <span class="col-price">
         ${{formatPrice this.price}}
       </span>
-      <form method="POST" action="/carts/{{../cartId}}/products/{{this._id}}">
-        <input type="hidden" name="redirectTo" value="/products" />
-        <button type="submit" class="btn-add-row">+</button>
-      </form>
+      <button 
+          type="button" 
+          class="btn-add-row" 
+          onclick="addToCart('{{this._id}}')"
+        >+</button>
     </li>
     {{else}}
     <li class="list-empty-state">
@@ -115,4 +117,42 @@
 <script src="/js/toast.js"></script>
 <script>
   const CART_ID = "{{cartId}}";
+  const token = localStorage.getItem("token");
+
+  // Un solo fetch para auth + admin
+  async function initSession() {
+    const authDiv = document.getElementById("authButtons");
+
+    if (!token) {
+      authDiv.innerHTML = `<a href="/login" class="btn-secondary">Login</a>`;
+      return;
+    }
+
+    authDiv.innerHTML = `<button onclick="logout()" class="btn-secondary">Cerrar sesión</button>`;
+
+    const res = await fetch("/api/sessions/current", {
+      headers: { Authorization: "Bearer " + token }
+    });
+
+    if (!res.ok) return;
+
+    const { user } = await res.json();
+
+    if (user.role === "admin") {
+      document.getElementById("adminLink").innerHTML = `
+        <a href="/realtimeproducts" class="page-nav-link">Gestionar productos →</a>
+      `;
+    }
+  }
+
+  function logout() {
+    localStorage.removeItem("token");
+    window.location.href = "/login";
+  }
+
+  function goToCart() {
+    window.location.href = `/carts/${CART_ID}`;
+  }
+
+  initSession();
 </script>

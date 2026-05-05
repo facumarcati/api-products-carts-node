@@ -54,6 +54,23 @@ body {
   text-transform: uppercase;
 }
 
+.home-header-actions {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 12px;
+  margin-top: 20px;
+}
+
+.home-header-actions .btn-secondary {
+  width: auto;
+}
+
+.home-header-actions #authButtons {
+  display: flex;
+  align-items: center;
+}
+
 /* ======== HOME HEADER (comparte estilos con page-header) ======== */
 
 .home-header {
@@ -1077,6 +1094,21 @@ body {
 .detail-info strong {
   color: #ffffff;
   font-weight: 600;
+}
+
+/* ======== AUTH LAYOUT (login / register) ======== */
+
+.auth-layout {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.auth-layout .form-panel {
+  width: 100%;
+  max-width: 420px;
 }
 
 /* ======== RESPONSIVE — TABLET (max 900px) ======== */

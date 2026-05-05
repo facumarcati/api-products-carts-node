@@ -113,4 +113,12 @@ router.post("/carts/:cid/products/:pid", async (req, res) => {
   res.redirect(redirectTo);
 });
 
+router.get("/login", (req, res) => {
+  res.render("login");
+});
+
+router.get("/register", (req, res) => {
+  res.render("register");
+});
+
 export default router;
